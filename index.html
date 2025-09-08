@@ -225,7 +225,48 @@ class Vampire(Human, Bat):
 
 			<small>Dzięki użyciu<strong>supper(), **kwargs</strong> każdy konstruktor wywoływany jest tylko raz. Ale po koleji kork po korku przenealizujemy MRO  </small>
 			</section>
+					<section>
+			<h4> Przykład użycia</h4>
+				
+			<small>Po koleji:<br><ol>
+				<li>Vampire.__init__ wywołuje super() → Python patrzy w MRO:<br>
+      Vampire → Human → Bat → Creature → object.
+  </li>
+  <li>Human pobiera <code>name</code>, przekazuje resztę (<code>wing_span</code>, <code>species</code>) dalej.</li>
+  <li>Bat pobiera <code>wing_span</code>, przekazuje dalej (<code>species</code>).</li>
+  <li>Creature pobiera <code>species</code>, przekazuje pusty <code>**kwargs</code> do <code>object</code>.</li>
+  <li><code>object.__init__</code> kończy łańcuch (nic nie robi).</li>
+			</ol>
+			<p> <STRONG>WAŻNE:</STRONG> przy wykorzystaniu supper(), <strong> każdy</strong> każda klasa w hierarchi dziedziczenia musi używać super()
+			W przeciwnym wypadku pominięcie super() choć w jednej klasie może spowodować załamanie MRO, a co za tym idzie nieoczekiwane skutki.</p>
+			</small>
+			</section>
+			<section>
 
+				<p> Jako dodatek. Bez urzycia super() w tym przykładzie klasa creature wywołana była by dwa razy. </p>
+				<pre><code data-trim class="python" data-line-numbers>
+class Creature:
+    def __init__(self, species, **kwargs):
+        super().__init__(**kwargs)   # przekazuje resztę dalej
+        self.species = species
+
+
+class Human(Creature):
+    def __init__(self, name, **kwargs):
+        super().__init__(**kwargs)
+        self.name = name
+
+
+class Bat(Creature):
+    def __init__(self, wing_span, **kwargs):
+        super().__init__(**kwargs)
+        self.wing_span = wing_span
+
+
+class Vampire(Human, Bat):
+    def __init__(self, name, wing_span, species="Vampire", **kwargs):
+        super().__init__(name=name, wing_span=wing_span, species=species, **kwargs)</code></pre>
+			</section>
 			</section>
 
 			<section>
