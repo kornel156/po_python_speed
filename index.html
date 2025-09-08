@@ -152,6 +152,79 @@ class KoloKolorowe(Kolo):
 				print("To jest kolorowe kółko.")
 					</code></pre>
 				</section>
+				<section>
+					<h4> supper() i **kwargs </h4>
+
+					<small> W rzeczywistych scenariuszach klasy zazwyczaj składają się z atrybutów i metod, a ich poprawne działanie wymaga inicjalizacji w konstruktorze (__init__).
+						<br>
+Przy dziedziczeniu wielokrotnym Python sam nie wywołuje wszystkich konstruktorów klas bazowych. 
+Jeżeli spróbujemy robić to ręcznie, wywołując osobno każdy konstruktor, może to prowadzić do problemów
+ – na przykład wielokrotnej inicjalizacji tej samej klasy lub złamania kolejności MRO (Method Resolution Order).
+Rozwiązaniem jest stosowanie super() we wszystkich konstruktorach 
+oraz przekazywanie argumentów w sposób elastyczny za pomocą *args i **kwargs. Dzięki temu:
+<ul>
+	<li>każda klasa bazowa może odebrać tylko te argumenty, które jej dotyczą,</li>
+	<li>pozostałe parametry są przekazywane dalej w łańcuchu wywołań,</li>
+	<li>wszystkie konstruktory w hierarchii zostaną wywołane dokładnie raz, zgodnie z MRO. </li>
+</ul>
+ </small>
+
+
+				</section>
+			<section>
+			<h4> Przykład użycia</h4>
+			<pre><code data-trim class="python" data-line-numbers>
+class Creature:
+    def __init__(self, species, **kwargs):
+        super().__init__(**kwargs)   # przekazuje resztę dalej
+        self.species = species
+
+
+class Human(Creature):
+    def __init__(self, name, **kwargs):
+        super().__init__(**kwargs)
+        self.name = name
+
+
+class Bat(Creature):
+    def __init__(self, wing_span, **kwargs):
+        super().__init__(**kwargs)
+        self.wing_span = wing_span
+
+
+class Vampire(Human, Bat):
+    def __init__(self, name, wing_span, species="Vampire", **kwargs):
+        super().__init__(name=name, wing_span=wing_span, species=species, **kwargs)</code></pre>
+
+			<small>W przykładzie clasa vampire dziedziczy po klasach Human i Bat, które z kolei dziedziczą po klasie Creature. </small>
+			</section>
+						<section>
+			<h4> Przykład użycia</h4>
+			<pre><code data-trim class="python" data-line-numbers>
+class Creature:
+    def __init__(self, species, **kwargs):
+        super().__init__(**kwargs)   # przekazuje resztę dalej
+        self.species = species
+
+
+class Human(Creature):
+    def __init__(self, name, **kwargs):
+        super().__init__(**kwargs)
+        self.name = name
+
+
+class Bat(Creature):
+    def __init__(self, wing_span, **kwargs):
+        super().__init__(**kwargs)
+        self.wing_span = wing_span
+
+
+class Vampire(Human, Bat):
+    def __init__(self, name, wing_span, species="Vampire", **kwargs):
+        super().__init__(name=name, wing_span=wing_span, species=species, **kwargs)</code></pre>
+
+			<small>Dzięki użyciu<strong>supper(), **kwargs</strong> każdy konstruktor wywoływany jest tylko raz. Ale po koleji kork po korku przenealizujemy MRO  </small>
+			</section>
 
 			</section>
 
